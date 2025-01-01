@@ -15,5 +15,45 @@ public class Transaction {
         this.amount = amount;
     }
 
-    // Getters and setters
+    // Getters
+    public Property getProperty() {
+        return property;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    // Setters
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }
