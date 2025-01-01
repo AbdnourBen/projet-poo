@@ -9,5 +9,29 @@ public class Client {
         this.preferences = preferences;
     }
 
-    // Getters and setters
+    // Getters
+    public String getName() {
+        return name;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public String getPreferences() {
+        return preferences;
+    }
+
+    // Setters
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
+    public void setPreferences(String preferences) {
+        this.preferences = preferences;
+    }
 }
