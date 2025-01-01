@@ -23,4 +23,8 @@ public class ClientManager {
             System.out.println("Invalid index");
         }
     }
+
+    public List<Client> getClients() {
+        return clients;
+    }
 }
