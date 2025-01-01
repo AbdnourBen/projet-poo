@@ -27,4 +27,9 @@ public class TransactionManager {
         }
         return false; // transaction not found
     }
+
+    // Add the getTransactions method
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
 }
