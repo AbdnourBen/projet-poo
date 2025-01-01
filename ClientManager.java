@@ -8,5 +8,19 @@ public class ClientManager {
         clients.add(client);
     }
 
-    // Other methods (modify, delete)
+    public void modifyClient(int index, Client newClient) {
+        if (index >= 0 && index < clients.size()) {
+            clients.set(index, newClient);
+        } else {
+            System.out.println("Invalid index");
+        }
+    }
+
+    public void deleteClient(int index) {
+        if (index >= 0 && index < clients.size()) {
+            clients.remove(index);
+        } else {
+            System.out.println("Invalid index");
+        }
+    }
 }
