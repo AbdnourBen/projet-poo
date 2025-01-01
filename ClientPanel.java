@@ -50,7 +50,22 @@ public class ClientPanel extends JPanel {
         modifyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implement modify client logic
+                String name = nameField.getText();
+                String contact = contactField.getText();
+                String preferences = preferencesField.getText();
+                int index = -1;
+                for (int i = 0; i < clientManager.getClients().size(); i++) {
+                    if (clientManager.getClients().get(i).getName().equals(name)) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index != -1) {
+                    Client newClient = new Client(name, contact, preferences);
+                    clientManager.modifyClient(index, newClient);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Client not found");
+                }
             }
         });
         buttonPanel.add(modifyButton);
@@ -59,7 +74,19 @@ public class ClientPanel extends JPanel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implement delete client logic
+                String name = nameField.getText();
+                int index = -1;
+                for (int i = 0; i < clientManager.getClients().size(); i++) {
+                    if (clientManager.getClients().get(i).getName().equals(name)) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index != -1) {
+                    clientManager.deleteClient(index);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Client not found");
+                }
             }
         });
         buttonPanel.add(deleteButton);
