@@ -2,15 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class PropertyPanel extends JPanel {
     private PropertyManager propertyManager;
+    private DefaultListModel<String> propertyListModel;
+    private JList<String> propertyList;
 
     public PropertyPanel(PropertyManager propertyManager) {
         this.propertyManager = propertyManager;
         setLayout(new BorderLayout());
 
-        // Add components for property management
         add(new JLabel("Property Management"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
@@ -36,6 +38,16 @@ public class PropertyPanel extends JPanel {
         JTextField descriptionField = new JTextField();
         centerPanel.add(descriptionField);
 
+        propertyListModel = new DefaultListModel<>();
+        propertyList = new JList<>(propertyListModel);
+        JScrollPane scrollPane = new JScrollPane(propertyList);
+
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(new JLabel("Property List"), BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(listPanel, BorderLayout.EAST);
+
         add(centerPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -52,6 +64,7 @@ public class PropertyPanel extends JPanel {
                 String description = descriptionField.getText();
                 Property property = new Property(type, size, price, location, description);
                 propertyManager.addProperty(property);
+                updatePropertyList();
             }
         });
         buttonPanel.add(addButton);
@@ -75,5 +88,15 @@ public class PropertyPanel extends JPanel {
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+
+        updatePropertyList();
+    }
+
+    private void updatePropertyList() {
+        propertyListModel.clear();
+        List<Property> properties = propertyManager.getProperties();
+        for (Property property : properties) {
+            propertyListModel.addElement(property.getType() + " - " + property.getLocation());
+        }
     }
 }
