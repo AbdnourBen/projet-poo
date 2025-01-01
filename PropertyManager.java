@@ -25,14 +25,13 @@ public class PropertyManager {
         }
     }
 
-    public Property searchProperty(String propertyName) {
+    public Property searchProperty(String propertyType) {
         for (Property property : properties) {
-            if (property.getName().equals(propertyName)) {
+            if (property.getType().equals(propertyType)) {
                 return property;
             }
         }
         return null; // Return null if not found
-    }
 }
-    /
+    
 }
