@@ -2,9 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class ClientPanel extends JPanel {
     private ClientManager clientManager;
+    private DefaultListModel<String> clientListModel;
+    private JList<String> clientList;
 
     public ClientPanel(ClientManager clientManager) {
         this.clientManager = clientManager;
@@ -13,7 +16,7 @@ public class ClientPanel extends JPanel {
         add(new JLabel("Client Management"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(3, 2));
+        centerPanel.setLayout(new GridLayout(4, 2));
 
         centerPanel.add(new JLabel("Name:"));
         JTextField nameField = new JTextField();
@@ -26,6 +29,16 @@ public class ClientPanel extends JPanel {
         centerPanel.add(new JLabel("Preferences:"));
         JTextField preferencesField = new JTextField();
         centerPanel.add(preferencesField);
+
+        clientListModel = new DefaultListModel<>();
+        clientList = new JList<>(clientListModel);
+        JScrollPane scrollPane = new JScrollPane(clientList);
+
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(new JLabel("Client List"), BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(listPanel, BorderLayout.EAST);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -41,6 +54,7 @@ public class ClientPanel extends JPanel {
                 String preferences = preferencesField.getText();
                 Client client = new Client(name, contact, preferences);
                 clientManager.addClient(client);
+                updateClientList();
             }
         });
         buttonPanel.add(addButton);
@@ -62,6 +76,7 @@ public class ClientPanel extends JPanel {
                 if (index != -1) {
                     Client newClient = new Client(name, contact, preferences);
                     clientManager.modifyClient(index, newClient);
+                    updateClientList();
                 } else {
                     JOptionPane.showMessageDialog(null, "Client not found");
                 }
@@ -83,6 +98,7 @@ public class ClientPanel extends JPanel {
                 }
                 if (index != -1) {
                     clientManager.deleteClient(index);
+                    updateClientList();
                 } else {
                     JOptionPane.showMessageDialog(null, "Client not found");
                 }
@@ -91,5 +107,15 @@ public class ClientPanel extends JPanel {
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+
+        updateClientList();
+    }
+
+    private void updateClientList() {
+        clientListModel.clear();
+        List<Client> clients = clientManager.getClients();
+        for (Client client : clients) {
+            clientListModel.addElement(client.getName());
+        }
     }
 }
