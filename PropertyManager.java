@@ -8,7 +8,6 @@ public class PropertyManager {
         properties.add(property);
     }
 
-
     public void modifyProperty(int index, Property newProperty) {
         if (index >= 0 && index < properties.size()) {
             properties.set(index, newProperty);
@@ -32,6 +31,10 @@ public class PropertyManager {
             }
         }
         return null; // Return null if not found
-}
-    
+    }
+
+    // Add the getProperties method
+    public List<Property> getProperties() {
+        return properties;
+    }
 }
