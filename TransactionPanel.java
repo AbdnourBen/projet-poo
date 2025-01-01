@@ -2,15 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class TransactionPanel extends JPanel {
     private TransactionManager transactionManager;
+    private DefaultListModel<String> transactionListModel;
+    private JList<String> transactionList;
 
     public TransactionPanel(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
         setLayout(new BorderLayout());
 
-        // Add components for transaction management
         add(new JLabel("Transaction Management"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
@@ -36,6 +38,16 @@ public class TransactionPanel extends JPanel {
         JTextField amountField = new JTextField();
         centerPanel.add(amountField);
 
+        transactionListModel = new DefaultListModel<>();
+        transactionList = new JList<>(transactionListModel);
+        JScrollPane scrollPane = new JScrollPane(transactionList);
+
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(new JLabel("Transaction List"), BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(listPanel, BorderLayout.EAST);
+
         add(centerPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -46,6 +58,7 @@ public class TransactionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement add transaction logic
+                updateTransactionList();
             }
         });
         buttonPanel.add(addButton);
@@ -55,6 +68,7 @@ public class TransactionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement modify transaction logic
+                updateTransactionList();
             }
         });
         buttonPanel.add(modifyButton);
@@ -64,10 +78,21 @@ public class TransactionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement delete transaction logic
+                updateTransactionList();
             }
         });
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+
+        updateTransactionList();
+    }
+
+    private void updateTransactionList() {
+        transactionListModel.clear();
+        List<Transaction> transactions = transactionManager.getTransactions();
+        for (Transaction transaction : transactions) {
+            transactionListModel.addElement(transaction.getProperty() + " - " + transaction.getClient());
+        }
     }
 }
