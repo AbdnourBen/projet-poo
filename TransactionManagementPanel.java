@@ -55,7 +55,7 @@ public class TransactionManagementPanel extends JPanel implements Observer {
             String paymentAmount = txtPaymentAmount.getText();
             String dateOfTransaction = txtDateOfTransaction.getText();
 
-            if (transactionType.equals("Choose Transaction Type..") || property == null || client == null || paymentAmount.isEmpty() || dateOfTransaction.isEmpty()) {
+            if (transactionType.equals("Choose Transaction Type..") || paymentAmount.isEmpty() || dateOfTransaction.isEmpty() || property == cmbProperty.getItemAt(0) || client == cmbClient.getItemAt(0)) {
                 JOptionPane.showMessageDialog(TransactionManagementPanel.this, "Please fill in all fields.", "Error", JOptionPane.WARNING_MESSAGE);
             } else {
                 Transaction transaction = new Transaction(transactionType, property, client, Double.parseDouble(paymentAmount), dateOfTransaction);
