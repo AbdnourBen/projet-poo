@@ -1,6 +1,5 @@
 package hjk;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Date;
@@ -8,10 +7,18 @@ import java.util.List;
 
 public class AppointmentManagementPanel extends JPanel {
     private RealEstateAgency agency;
+    private JTextField txtAgent, txtClient, txtDate;
+    private JList<Appointment> appointmentList;
+    private DefaultListModel<Appointment> appointmentListModel;
 
     public AppointmentManagementPanel(RealEstateAgency agency) {
         this.agency = agency;
         setLayout(new BorderLayout());
+
+        // Initialize text fields
+        txtAgent = new JTextField(15);
+        txtClient = new JTextField(15);
+        txtDate = new JTextField(15);
 
         // Add components and layout for managing appointments
         JButton addButton = new JButton("Add Appointment");
@@ -24,12 +31,28 @@ public class AppointmentManagementPanel extends JPanel {
         buttonPanel.add(modifyButton);
         buttonPanel.add(deleteButton);
 
+       
+
+        appointmentListModel = new DefaultListModel<>();
+        appointmentList = new JList<>(appointmentListModel);
+
         add(buttonPanel, BorderLayout.NORTH);
+      
+        add(new JScrollPane(appointmentList), BorderLayout.SOUTH);
 
         // Add action listeners for buttons (implement the actions as needed)
         addButton.addActionListener(e -> addAppointment());
         modifyButton.addActionListener(e -> modifyAppointment());
         deleteButton.addActionListener(e -> deleteAppointment());
+        appointmentList.addListSelectionListener(e -> displayAppointmentDetails(appointmentList.getSelectedValue()));
+    }
+
+    private void displayAppointmentDetails(Appointment appointment) {
+        if (appointment != null) {
+            txtAgent.setText(appointment.getAgent().getName());
+            txtClient.setText(appointment.getClient().getName());
+            txtDate.setText(appointment.getDate().toString());
+        }
     }
 
     private void addAppointment() {
@@ -39,6 +62,7 @@ public class AppointmentManagementPanel extends JPanel {
         if (agent != null && client != null && date != null) {
             Appointment appointment = new Appointment(agent, client, date);
             agency.addAppointment(appointment);
+            appointmentListModel.addElement(appointment);
             JOptionPane.showMessageDialog(this, "Appointment added successfully.");
         } else {
             JOptionPane.showMessageDialog(this, "Appointment creation failed. Ensure all fields are selected.");
@@ -54,6 +78,7 @@ public class AppointmentManagementPanel extends JPanel {
             if (agent != null && client != null && date != null) {
                 Appointment newAppointment = new Appointment(agent, client, date);
                 agency.modifyAppointment(oldAppointment, newAppointment);
+                appointmentListModel.setElementAt(newAppointment, appointmentList.getSelectedIndex());
                 JOptionPane.showMessageDialog(this, "Appointment modified successfully.");
             } else {
                 JOptionPane.showMessageDialog(this, "Appointment modification failed. Ensure all fields are selected.");
@@ -65,6 +90,7 @@ public class AppointmentManagementPanel extends JPanel {
         Appointment appointment = selectAppointment();
         if (appointment != null) {
             agency.deleteAppointment(appointment);
+            appointmentListModel.removeElement(appointment);
             JOptionPane.showMessageDialog(this, "Appointment deleted successfully.");
         } else {
             JOptionPane.showMessageDialog(this, "No appointment selected for deletion.");
@@ -115,4 +141,3 @@ public class AppointmentManagementPanel extends JPanel {
         return (Appointment) JOptionPane.showInputDialog(this, "Select an Appointment:", "Select Appointment",
                 JOptionPane.QUESTION_MESSAGE, null, appointmentArray, appointmentArray[0]);
     }
-}
