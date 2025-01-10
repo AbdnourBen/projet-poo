@@ -18,11 +18,13 @@ public class MainApp {
         AgentManagementPanel agentPanel = new AgentManagementPanel(agency);
         ClientManagementPanel clientPanel = new ClientManagementPanel(agency);
         TransactionManagementPanel transactionPanel = new TransactionManagementPanel(agency);
+        AppointmentManagementPanel appointmentPanel = new AppointmentManagementPanel(agency);
 
         tabbedPane.add("Properties", propertyPanel);
         tabbedPane.add("Agents", agentPanel);
         tabbedPane.add("Clients", clientPanel);
         tabbedPane.add("Transactions", transactionPanel);
+        tabbedPane.add("Appointments", appointmentPanel);
 
         frame.add(tabbedPane);
         frame.setVisible(true);
