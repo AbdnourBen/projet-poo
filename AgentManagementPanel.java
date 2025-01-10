@@ -15,10 +15,7 @@ public class AppointmentManagementPanel extends JPanel {
         this.agency = agency;
         setLayout(new BorderLayout());
 
-        // Initialize text fields
-        txtAgent = new JTextField(15);
-        txtClient = new JTextField(15);
-        txtDate = new JTextField(15);
+      
 
         // Add components and layout for managing appointments
         JButton addButton = new JButton("Add Appointment");
