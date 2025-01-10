@@ -1,7 +1,5 @@
 package hjk;
 
-
-
 import java.util.Date;
 
 public class Appointment {
@@ -38,5 +36,14 @@ public class Appointment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "agent=" + agent.getName() +
+                ", client=" + client.getName() +
+                ", date=" + date +
+                '}';
     }
 }
