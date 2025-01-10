@@ -15,11 +15,7 @@ public class AppointmentManagementPanel extends JPanel {
         this.agency = agency;
         setLayout(new BorderLayout());
 
-        // Initialize text fields
-        txtAgent = new JTextField(15);
-        txtClient = new JTextField(15);
-        txtDate = new JTextField(15);
-
+       
         // Add components and layout for managing appointments
         JButton addButton = new JButton("Add Appointment");
         JButton modifyButton = new JButton("Modify Appointment");
@@ -36,9 +32,9 @@ public class AppointmentManagementPanel extends JPanel {
         appointmentListModel = new DefaultListModel<>();
         appointmentList = new JList<>(appointmentListModel);
 
-        add(buttonPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.SOUTH);
       
-        add(new JScrollPane(appointmentList), BorderLayout.SOUTH);
+        add(new JScrollPane(appointmentList), BorderLayout.NORTH);
 
         // Add action listeners for buttons (implement the actions as needed)
         addButton.addActionListener(e -> addAppointment());
@@ -141,3 +137,4 @@ public class AppointmentManagementPanel extends JPanel {
         return (Appointment) JOptionPane.showInputDialog(this, "Select an Appointment:", "Select Appointment",
                 JOptionPane.QUESTION_MESSAGE, null, appointmentArray, appointmentArray[0]);
     }
+}
