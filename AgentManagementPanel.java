@@ -2,76 +2,142 @@ package hjk;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public class AgentManagementPanel extends JPanel {
-    private DefaultListModel<Agent> agentListModel = new DefaultListModel<>();
-    private JList<Agent> agentList;
+public class AppointmentManagementPanel extends JPanel {
     private RealEstateAgency agency;
+    private JTextField txtAgent, txtClient, txtDate;
+    private JList<Appointment> appointmentList;
+    private DefaultListModel<Appointment> appointmentListModel;
 
-    public AgentManagementPanel(RealEstateAgency agency) {
+    public AppointmentManagementPanel(RealEstateAgency agency) {
         this.agency = agency;
         setLayout(new BorderLayout());
 
-        agentList = new JList<>(agentListModel);
+        // Initialize text fields
+        txtAgent = new JTextField(15);
+        txtClient = new JTextField(15);
+        txtDate = new JTextField(15);
 
-        JPanel inputPanel = new JPanel(new GridLayout(3, 2));
-        JTextField txtName = new JTextField();
-        JTextField txtId = new JTextField();
-        JTextField txtContactInfo = new JTextField();
+        // Add components and layout for managing appointments
+        JButton addButton = new JButton("Add Appointment");
+        JButton modifyButton = new JButton("Modify Appointment");
+        JButton deleteButton = new JButton("Delete Appointment");
 
-        inputPanel.add(new JLabel("Name:"));
-        inputPanel.add(txtName);
-        inputPanel.add(new JLabel("ID:"));
-        inputPanel.add(txtId);
-        inputPanel.add(new JLabel("Contact Info:"));
-        inputPanel.add(txtContactInfo);
-
-        JButton btnAdd = new JButton("Add Agent");
-        btnAdd.addActionListener(e -> {
-            String name = txtName.getText();
-            String id = txtId.getText();
-            String contactInfo = txtContactInfo.getText();
-            if (!name.isEmpty() && !id.isEmpty() && !contactInfo.isEmpty()) {
-                Agent agent = new Agent(name, id, contactInfo);
-                agency.addAgent(agent);
-                refreshAgentList();
-                txtName.setText("");
-                txtId.setText("");
-                txtContactInfo.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "All fields are mandatory!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JButton btnDelete = new JButton("Delete Agent");
-        btnDelete.addActionListener(e -> {
-            int selectedIndex = agentList.getSelectedIndex();
-            if (selectedIndex >= 0) {
-                Agent selectedAgent = agentListModel.get(selectedIndex);
-                agency.deleteAgent(selectedAgent);
-                refreshAgentList();
-                PropertyManagementPanel.getInstance().update();
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select an agent to delete.", "Error", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-
+        // Panel for buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(btnAdd);
-        buttonPanel.add(btnDelete);
+        buttonPanel.add(addButton);
+        buttonPanel.add(modifyButton);
+        buttonPanel.add(deleteButton);
 
-        add(new JScrollPane(agentList), BorderLayout.CENTER);
-        add(inputPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.SOUTH);
-        refreshAgentList();
+       
+
+        appointmentListModel = new DefaultListModel<>();
+        appointmentList = new JList<>(appointmentListModel);
+
+        add(buttonPanel, BorderLayout.NORTH);
+      
+        add(new JScrollPane(appointmentList), BorderLayout.SOUTH);
+
+        // Add action listeners for buttons (implement the actions as needed)
+        addButton.addActionListener(e -> addAppointment());
+        modifyButton.addActionListener(e -> modifyAppointment());
+        deleteButton.addActionListener(e -> deleteAppointment());
+        appointmentList.addListSelectionListener(e -> displayAppointmentDetails(appointmentList.getSelectedValue()));
     }
 
-    private void refreshAgentList() {
-        agentListModel.clear();
-        ArrayList<Agent> agents = agency.getAgents();
-        for (Agent agent : agents) {
-            agentListModel.addElement(agent);
+    private void displayAppointmentDetails(Appointment appointment) {
+        if (appointment != null) {
+            txtAgent.setText(appointment.getAgent().getName());
+            txtClient.setText(appointment.getClient().getName());
+            txtDate.setText(appointment.getDate().toString());
         }
     }
-}
+
+    private void addAppointment() {
+        Agent agent = selectAgent();
+        Client client = selectClient();
+        Date date = selectDate();
+        if (agent != null && client != null && date != null) {
+            Appointment appointment = new Appointment(agent, client, date);
+            agency.addAppointment(appointment);
+            appointmentListModel.addElement(appointment);
+            JOptionPane.showMessageDialog(this, "Appointment added successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Appointment creation failed. Ensure all fields are selected.");
+        }
+    }
+
+    private void modifyAppointment() {
+        Appointment oldAppointment = selectAppointment();
+        if (oldAppointment != null) {
+            Agent agent = selectAgent();
+            Client client = selectClient();
+            Date date = selectDate();
+            if (agent != null && client != null && date != null) {
+                Appointment newAppointment = new Appointment(agent, client, date);
+                agency.modifyAppointment(oldAppointment, newAppointment);
+                appointmentListModel.setElementAt(newAppointment, appointmentList.getSelectedIndex());
+                JOptionPane.showMessageDialog(this, "Appointment modified successfully.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Appointment modification failed. Ensure all fields are selected.");
+            }
+        }
+    }
+
+    private void deleteAppointment() {
+        Appointment appointment = selectAppointment();
+        if (appointment != null) {
+            agency.deleteAppointment(appointment);
+            appointmentListModel.removeElement(appointment);
+            JOptionPane.showMessageDialog(this, "Appointment deleted successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "No appointment selected for deletion.");
+        }
+    }
+
+    private Agent selectAgent() {
+        List<Agent> agents = agency.getAgents();
+        if (agents.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No agents available.");
+            return null;
+        }
+        Agent[] agentArray = agents.toArray(new Agent[0]);
+        return (Agent) JOptionPane.showInputDialog(this, "Select an Agent:", "Select Agent",
+                JOptionPane.QUESTION_MESSAGE, null, agentArray, agentArray[0]);
+    }
+
+    private Client selectClient() {
+        List<Client> clients = agency.getClients();
+        if (clients.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No clients available.");
+            return null;
+        }
+        Client[] clientArray = clients.toArray(new Client[0]);
+        return (Client) JOptionPane.showInputDialog(this, "Select a Client:", "Select Client",
+                JOptionPane.QUESTION_MESSAGE, null, clientArray, clientArray[0]);
+    }
+
+    private Date selectDate() {
+        JSpinner dateSpinner = new JSpinner(new SpinnerDateModel());
+        JComponent editor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy HH:mm");
+        dateSpinner.setEditor(editor);
+        int option = JOptionPane.showOptionDialog(this, dateSpinner, "Select Date and Time",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if (option == JOptionPane.OK_OPTION) {
+            return (Date) dateSpinner.getValue();
+        }
+        return null;
+    }
+
+    private Appointment selectAppointment() {
+        List<Appointment> appointments = agency.getAppointments();
+        if (appointments.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No appointments available.");
+            return null;
+        }
+        Appointment[] appointmentArray = appointments.toArray(new Appointment[0]);
+        return (Appointment) JOptionPane.showInputDialog(this, "Select an Appointment:", "Select Appointment",
+                JOptionPane.QUESTION_MESSAGE, null, appointmentArray, appointmentArray[0]);
+    }
