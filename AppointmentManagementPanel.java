@@ -7,7 +7,6 @@ import java.util.List;
 
 public class AppointmentManagementPanel extends JPanel {
     private RealEstateAgency agency;
-    private JTextField txtAgent, txtClient, txtDate;
     private JList<Appointment> appointmentList;
     private DefaultListModel<Appointment> appointmentListModel;
 
@@ -15,7 +14,6 @@ public class AppointmentManagementPanel extends JPanel {
         this.agency = agency;
         setLayout(new BorderLayout());
 
-       
         // Add components and layout for managing appointments
         JButton addButton = new JButton("Add Appointment");
         JButton modifyButton = new JButton("Modify Appointment");
@@ -27,14 +25,14 @@ public class AppointmentManagementPanel extends JPanel {
         buttonPanel.add(modifyButton);
         buttonPanel.add(deleteButton);
 
-       
-
         appointmentListModel = new DefaultListModel<>();
         appointmentList = new JList<>(appointmentListModel);
 
+        JScrollPane scrollPane = new JScrollPane(appointmentList);
+        scrollPane.setPreferredSize(new Dimension(400, 500)); // Set the height for the JScrollPane
+
         add(buttonPanel, BorderLayout.SOUTH);
-      
-        add(new JScrollPane(appointmentList), BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.NORTH);
 
         // Add action listeners for buttons (implement the actions as needed)
         addButton.addActionListener(e -> addAppointment());
@@ -44,11 +42,7 @@ public class AppointmentManagementPanel extends JPanel {
     }
 
     private void displayAppointmentDetails(Appointment appointment) {
-        if (appointment != null) {
-            txtAgent.setText(appointment.getAgent().getName());
-            txtClient.setText(appointment.getClient().getName());
-            txtDate.setText(appointment.getDate().toString());
-        }
+        // Display appointment details if needed
     }
 
     private void addAppointment() {
@@ -137,4 +131,3 @@ public class AppointmentManagementPanel extends JPanel {
         return (Appointment) JOptionPane.showInputDialog(this, "Select an Appointment:", "Select Appointment",
                 JOptionPane.QUESTION_MESSAGE, null, appointmentArray, appointmentArray[0]);
     }
-}
